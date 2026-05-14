@@ -53,12 +53,21 @@ namespace WinFormsAppClientBattleship
         }
 
         // Fires when player clicks the attack board (shooting)
-        private void AttackBoard_Click(object sender, EventArgs e)
+        private async void AttackBoard_Click(object sender, EventArgs e)
         {
             Button btn = (Button)sender;
             Point pos = (Point)btn.Tag;
-            Console.WriteLine($"Attack board clicked: Row {pos.X}, Col {pos.Y}");
-            // Send attack coordinates to server will go here
+
+            GameMessage attackMessage = new GameMessage
+            {
+                Tip = "Atac",
+                X = pos.X,
+                Y = pos.Y
+            };
+
+            await NetworkHelper.SendMessageAsync(stream, attackMessage);
+            btn.Enabled = false; // disable button after clicking
+            labelStatus.Text = "Waiting for result...";
         }
 
         private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
