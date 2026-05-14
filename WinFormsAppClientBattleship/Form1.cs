@@ -1,5 +1,6 @@
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
 
 namespace WinFormsAppClientBattleship
 {
@@ -129,10 +130,43 @@ namespace WinFormsAppClientBattleship
                 }
             }
         }
-        private void HandleServerMessage(string message)
+        private void HandleServerMessage(string rawMessage)
         {
-            // We will parse JSON here later
-            Console.WriteLine($"Handling message: {message}");
+            GameMessage? message = JsonSerializer.Deserialize<GameMessage>(rawMessage.Trim());
+            if (message == null) return;
+
+            switch (message.Tip)
+            {
+                case "RezultatAtac":
+                    HandleAttackResult(message);
+                    break;
+
+                case "NotificareAtacPrimit":
+                    HandleIncomingAttack(message);
+                    break;
+
+                case "SchimbareTura":
+                    HandleTurnChange(message);
+                    break;
+            }
+        }
+
+        private void HandleAttackResult(GameMessage message)
+        {
+            Button btn = attackBoard[message.X, message.Y];
+            btn.BackColor = message.Status == "Hit" ? Color.Red : Color.Blue;
+            labelStatus.Text = $"Your attack at ({message.X},{message.Y}) was a {message.Status}!";
+        }
+
+        private void HandleIncomingAttack(GameMessage message)
+        {
+            Button btn = ownBoard[message.X, message.Y];
+            btn.BackColor = Color.Red;
+        }
+
+        private void HandleTurnChange(GameMessage message)
+        {
+            labelStatus.Text = message.JucatorActiv == 1 ? "Your turn!" : "Opponent's turn...";
         }
         private async Task SendMessage(string message)
         {
