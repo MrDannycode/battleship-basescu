@@ -240,6 +240,10 @@ namespace WinFormsAppClientBattleship
                 case "Start":
                     labelStatus.Text = "Game Started! Waiting for turn...";
                     break;
+
+                case "GameOver":
+                    HandleGameOver(message);
+                    break;
             }
         }
 
@@ -258,7 +262,39 @@ namespace WinFormsAppClientBattleship
 
         private void HandleTurnChange(GameMessage message)
         {
-            labelStatus.Text = message.JucatorActiv == 1 ? "Your turn!" : "Opponent's turn...";
+            labelStatus.Text = message.Status == "MyTurn" ? "Your turn!" : "Opponent's turn...";
+        }
+
+        private void HandleGameOver(GameMessage message)
+        {
+            string result = message.Status == "Win" ? "You Won!" : "You Lost!";
+            MessageBox.Show(result, "Game Over");
+            ResetGame();
+        }
+
+        private void ResetGame()
+        {
+            isPlacingShips = true;
+            playerGrid = new int[10, 10];
+            
+            listShips.Items.Clear();
+            foreach (var ship in availableShips.Keys)
+            {
+                listShips.Items.Add(ship);
+            }
+            
+            for (int row = 0; row < 10; row++)
+            {
+                for (int col = 0; col < 10; col++)
+                {
+                    ownBoard[row, col].BackColor = Color.LightBlue;
+                    attackBoard[row, col].BackColor = Color.LightGray;
+                    attackBoard[row, col].Enabled = true;
+                }
+            }
+            
+            btnReady.Enabled = false;
+            labelStatus.Text = "Place your ships for a new game.";
         }
         private async Task SendMessage(string message)
         {
