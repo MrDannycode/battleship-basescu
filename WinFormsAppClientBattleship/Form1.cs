@@ -16,6 +16,7 @@ namespace WinFormsAppClientBattleship
         private Button[,] attackBoard = new Button[10, 10];
         private int[,] playerGrid = new int[10, 10];
         private bool isPlacingShips = true;
+        private bool isMyTurn = false;
         private Dictionary<string, int> availableShips = new Dictionary<string, int>()
         {
             {"Carrier (5)", 5},
@@ -120,6 +121,9 @@ namespace WinFormsAppClientBattleship
         private async void AttackBoard_Click(object sender, EventArgs e)
         {
             if (isPlacingShips) return; // Can't attack during placement
+            if (!isMyTurn) return; // Not your turn
+
+            isMyTurn = false; // Block until we get the result and next turn
 
             Button btn = (Button)sender;
             Point pos = (Point)btn.Tag;
@@ -262,7 +266,8 @@ namespace WinFormsAppClientBattleship
 
         private void HandleTurnChange(GameMessage message)
         {
-            labelStatus.Text = message.Status == "MyTurn" ? "Your turn!" : "Opponent's turn...";
+            isMyTurn = message.Status == "MyTurn";
+            labelStatus.Text = isMyTurn ? "Your turn!" : "Opponent's turn...";
         }
 
         private void HandleGameOver(GameMessage message)

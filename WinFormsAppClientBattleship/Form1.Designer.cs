@@ -131,7 +131,7 @@ namespace WinFormsAppClientBattleship
             // labelStatus
             // 
             labelStatus.AutoSize = true;
-            labelStatus.Location = new Point(246, 438);
+            labelStatus.Location = new Point(400, 380);
             labelStatus.Name = "labelStatus";
             labelStatus.Size = new Size(111, 20);
             labelStatus.TabIndex = 2;
