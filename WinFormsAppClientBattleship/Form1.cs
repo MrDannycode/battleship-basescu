@@ -153,7 +153,17 @@ namespace WinFormsAppClientBattleship
 
             if (isConnected)
             {
-                GameMessage readyMessage = new GameMessage { Tip = "Ready" };
+                int[][] jaggedBoard = new int[10][];
+                for (int i = 0; i < 10; i++)
+                {
+                    jaggedBoard[i] = new int[10];
+                    for (int j = 0; j < 10; j++)
+                    {
+                        jaggedBoard[i][j] = playerGrid[i, j];
+                    }
+                }
+
+                GameMessage readyMessage = new GameMessage { Tip = "Ready", Board = jaggedBoard };
                 await NetworkHelper.SendMessageAsync(stream, readyMessage);
                 labelStatus.Text = "Waiting for other player to be ready...";
             }

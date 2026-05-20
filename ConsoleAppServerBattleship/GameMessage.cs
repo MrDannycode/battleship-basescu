@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +13,6 @@ namespace ConsoleAppServerBattleship
         public int Y { get; set; }           // Column
         public string Status { get; set; }   // "Hit", "Miss", "Sunk"
         public int JucatorActiv { get; set; } // 1 or 2
+        public int[][] Board { get; set; }   // Board state
     }
 }

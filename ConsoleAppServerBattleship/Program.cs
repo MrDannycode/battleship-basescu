@@ -16,6 +16,8 @@ Console.WriteLine("Both players connected. Waiting for players to place ships...
 
 bool player1Ready = false;
 bool player2Ready = false;
+int[][] player1Board = null;
+int[][] player2Board = null;
 
 while (!player1Ready || !player2Ready)
 {
@@ -24,6 +26,7 @@ while (!player1Ready || !player2Ready)
         var msg = await NetworkHelper.ReceiveMessageAsync(client1.GetStream());
         if (msg?.Tip == "Ready")
         {
+            player1Board = msg.Board;
             player1Ready = true;
             Console.WriteLine("Player 1 is ready.");
         }
@@ -33,6 +36,7 @@ while (!player1Ready || !player2Ready)
         var msg = await NetworkHelper.ReceiveMessageAsync(client2.GetStream());
         if (msg?.Tip == "Ready")
         {
+            player2Board = msg.Board;
             player2Ready = true;
             Console.WriteLine("Player 2 is ready.");
         }
@@ -66,8 +70,14 @@ while (true)
 
     Console.WriteLine($"Player {currentPlayer} attacks ({message.X},{message.Y})");
 
-    // For now, randomly decide Hit or Miss (real logic comes later)
-    string status = new Random().Next(2) == 0 ? "Hit" : "Miss";
+    int[][] opponentBoard = currentPlayer == 1 ? player2Board : player1Board;
+    string status = "Miss";
+    
+    if (opponentBoard != null && opponentBoard[message.X][message.Y] == 1)
+    {
+        status = "Hit";
+        opponentBoard[message.X][message.Y] = 2; // Mark as hit
+    }
 
     // Send result to attacker
     await NetworkHelper.SendMessageAsync(activeStream, new GameMessage
