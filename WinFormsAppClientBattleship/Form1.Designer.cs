@@ -1,4 +1,4 @@
-﻿namespace WinFormsAppClientBattleship
+namespace WinFormsAppClientBattleship
 {
     partial class Form1
     {
@@ -34,6 +34,9 @@
             label3 = new Label();
             label4 = new Label();
             labelStatus = new Label();
+            listShips = new ListBox();
+            chkHorizontal = new CheckBox();
+            btnReady = new Button();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -135,11 +138,47 @@
             labelStatus.Text = "Status message";
             labelStatus.Click += label3_Click;
             // 
+            // 
+            // listShips
+            // 
+            listShips.FormattingEnabled = true;
+            listShips.ItemHeight = 20;
+            listShips.Location = new Point(55, 380);
+            listShips.Name = "listShips";
+            listShips.Size = new Size(150, 104);
+            listShips.TabIndex = 3;
+            // 
+            // chkHorizontal
+            // 
+            chkHorizontal.AutoSize = true;
+            chkHorizontal.Checked = true;
+            chkHorizontal.CheckState = CheckState.Checked;
+            chkHorizontal.Location = new Point(220, 380);
+            chkHorizontal.Name = "chkHorizontal";
+            chkHorizontal.Size = new Size(100, 24);
+            chkHorizontal.TabIndex = 4;
+            chkHorizontal.Text = "Horizontal";
+            chkHorizontal.UseVisualStyleBackColor = true;
+            // 
+            // btnReady
+            // 
+            btnReady.Enabled = false;
+            btnReady.Location = new Point(220, 420);
+            btnReady.Name = "btnReady";
+            btnReady.Size = new Size(94, 29);
+            btnReady.TabIndex = 5;
+            btnReady.Text = "Ready";
+            btnReady.UseVisualStyleBackColor = true;
+            btnReady.Click += btnReady_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1082, 853);
+            Controls.Add(btnReady);
+            Controls.Add(chkHorizontal);
+            Controls.Add(listShips);
             Controls.Add(label4);
             Controls.Add(labelStatus);
             Controls.Add(label3);
@@ -161,5 +200,8 @@
         private Label label3;
         private Label label4;
         private Label labelStatus;
+        private ListBox listShips;
+        private CheckBox chkHorizontal;
+        private Button btnReady;
     }
 }

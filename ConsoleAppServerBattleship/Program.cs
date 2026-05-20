@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Sockets;
 using ConsoleAppServerBattleship;
 
@@ -12,12 +12,43 @@ Console.WriteLine("Player 1 connected!");
 TcpClient client2 = await server.AcceptTcpClientAsync();
 Console.WriteLine("Player 2 connected!");
 
-Console.WriteLine("Both players connected. Game can begin!");
+Console.WriteLine("Both players connected. Waiting for players to place ships...");
 
-// Keep server alive
-Console.ReadLine();
+bool player1Ready = false;
+bool player2Ready = false;
+
+while (!player1Ready || !player2Ready)
+{
+    if (!player1Ready && client1.GetStream().DataAvailable)
+    {
+        var msg = await NetworkHelper.ReceiveMessageAsync(client1.GetStream());
+        if (msg?.Tip == "Ready")
+        {
+            player1Ready = true;
+            Console.WriteLine("Player 1 is ready.");
+        }
+    }
+    if (!player2Ready && client2.GetStream().DataAvailable)
+    {
+        var msg = await NetworkHelper.ReceiveMessageAsync(client2.GetStream());
+        if (msg?.Tip == "Ready")
+        {
+            player2Ready = true;
+            Console.WriteLine("Player 2 is ready.");
+        }
+    }
+    await Task.Delay(100);
+}
+
+Console.WriteLine("Both players are ready. Game starts!");
 
 int currentPlayer = 1; // Player 1 starts
+
+await NetworkHelper.SendMessageAsync(client1.GetStream(), new GameMessage { Tip = "Start" });
+await NetworkHelper.SendMessageAsync(client2.GetStream(), new GameMessage { Tip = "Start" });
+
+await NetworkHelper.SendMessageAsync(client1.GetStream(), new GameMessage { Tip = "SchimbareTura", JucatorActiv = currentPlayer });
+await NetworkHelper.SendMessageAsync(client2.GetStream(), new GameMessage { Tip = "SchimbareTura", JucatorActiv = currentPlayer });
 
 while (true)
 {

@@ -14,6 +14,16 @@ namespace WinFormsAppClientBattleship
 
         private Button[,] ownBoard = new Button[10, 10];
         private Button[,] attackBoard = new Button[10, 10];
+        private int[,] playerGrid = new int[10, 10];
+        private bool isPlacingShips = true;
+        private Dictionary<string, int> availableShips = new Dictionary<string, int>()
+        {
+            {"Carrier (5)", 5},
+            {"Battleship (4)", 4},
+            {"Cruiser (3)", 3},
+            {"Submarine (3)", 3},
+            {"Destroyer (2)", 2}
+        };
 
         private void InitializeBoards()
         {
@@ -42,20 +52,75 @@ namespace WinFormsAppClientBattleship
                     tableLayoutPanel2.Controls.Add(attackBtn, col, row);
                 }
             }
+
+            foreach (var ship in availableShips.Keys)
+            {
+                listShips.Items.Add(ship);
+            }
         }
 
         // Fires when player clicks their own board (ship placement)
         private void OwnBoard_Click(object sender, EventArgs e)
         {
+            if (!isPlacingShips) return;
+
+            if (listShips.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a ship to place from the list.");
+                return;
+            }
+
+            string selectedShipName = listShips.SelectedItem.ToString();
+            int shipLength = availableShips[selectedShipName];
+            bool isHorizontal = chkHorizontal.Checked;
+
             Button btn = (Button)sender;
             Point pos = (Point)btn.Tag;
-            Console.WriteLine($"Own board clicked: Row {pos.X}, Col {pos.Y}");
-            // Ship placement logic will go here
+            int row = pos.X;
+            int col = pos.Y;
+
+            // Check if valid
+            if (isHorizontal)
+            {
+                if (col + shipLength > 10) return; // Out of bounds
+                for (int c = col; c < col + shipLength; c++)
+                {
+                    if (playerGrid[row, c] != 0) return; // Overlap
+                }
+                // Place
+                for (int c = col; c < col + shipLength; c++)
+                {
+                    playerGrid[row, c] = 1;
+                    ownBoard[row, c].BackColor = Color.DarkGray;
+                }
+            }
+            else
+            {
+                if (row + shipLength > 10) return; // Out of bounds
+                for (int r = row; r < row + shipLength; r++)
+                {
+                    if (playerGrid[r, col] != 0) return; // Overlap
+                }
+                // Place
+                for (int r = row; r < row + shipLength; r++)
+                {
+                    playerGrid[r, col] = 1;
+                    ownBoard[r, col].BackColor = Color.DarkGray;
+                }
+            }
+
+            listShips.Items.Remove(selectedShipName);
+            if (listShips.Items.Count == 0)
+            {
+                btnReady.Enabled = true;
+            }
         }
 
         // Fires when player clicks the attack board (shooting)
         private async void AttackBoard_Click(object sender, EventArgs e)
         {
+            if (isPlacingShips) return; // Can't attack during placement
+
             Button btn = (Button)sender;
             Point pos = (Point)btn.Tag;
 
@@ -81,6 +146,19 @@ namespace WinFormsAppClientBattleship
 
         }
 
+        private async void btnReady_Click(object sender, EventArgs e)
+        {
+            btnReady.Enabled = false;
+            isPlacingShips = false;
+
+            if (isConnected)
+            {
+                GameMessage readyMessage = new GameMessage { Tip = "Ready" };
+                await NetworkHelper.SendMessageAsync(stream, readyMessage);
+                labelStatus.Text = "Waiting for other player to be ready...";
+            }
+        }
+
         private TcpClient client;
         private NetworkStream stream;
         private bool isConnected = false;
@@ -94,7 +172,7 @@ namespace WinFormsAppClientBattleship
                 stream = client.GetStream();
                 isConnected = true;
 
-                labelStatus.Text = "Connected! Waiting for opponent...";
+                labelStatus.Text = "Connected! Place your ships.";
                 Console.WriteLine("Connected to server!");
 
                 // Start listening for messages from server
@@ -147,6 +225,10 @@ namespace WinFormsAppClientBattleship
 
                 case "SchimbareTura":
                     HandleTurnChange(message);
+                    break;
+
+                case "Start":
+                    labelStatus.Text = "Game Started! Waiting for turn...";
                     break;
             }
         }
