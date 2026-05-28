@@ -30,6 +30,7 @@
         {
             button1 = new Button();
             button2 = new Button();
+            btnMute = new Button();
             SuspendLayout();
             // 
             // button1
@@ -52,11 +53,22 @@
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
+            // btnMute
+            // 
+            btnMute.Location = new Point(502, 373);
+            btnMute.Name = "btnMute";
+            btnMute.Size = new Size(165, 29);
+            btnMute.TabIndex = 2;
+            btnMute.Text = "Mute";
+            btnMute.UseVisualStyleBackColor = true;
+            btnMute.Click += btnMute_Click;
+            // 
             // MenuForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1269, 653);
+            ClientSize = new Size(1112, 607);
+            Controls.Add(btnMute);
             Controls.Add(button2);
             Controls.Add(button1);
             Name = "MenuForm";
@@ -68,5 +80,6 @@
 
         private Button button1;
         private Button button2;
+        private Button btnMute;
     }
 }

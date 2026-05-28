@@ -256,12 +256,19 @@ namespace WinFormsAppClientBattleship
             Button btn = attackBoard[message.X, message.Y];
             btn.BackColor = message.Status == "Hit" ? Color.Red : Color.Blue;
             labelStatus.Text = $"Your attack at ({message.X},{message.Y}) was a {message.Status}!";
+
+            if (message.Status == "Hit")
+                GameAudio.PlayHitSound();
         }
 
         private void HandleIncomingAttack(GameMessage message)
         {
             Button btn = ownBoard[message.X, message.Y];
-            btn.BackColor = Color.Red;
+            bool isHit = playerGrid[message.X, message.Y] == 1;
+            btn.BackColor = isHit ? Color.Red : Color.Blue;
+
+            if (isHit)
+                GameAudio.PlayHitSound();
         }
 
         private void HandleTurnChange(GameMessage message)

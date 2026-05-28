@@ -1,16 +1,12 @@
-﻿using System.Media;
-
-namespace WinFormsAppClientBattleship
+﻿namespace WinFormsAppClientBattleship
 {
     public partial class MenuForm : Form
     {
-        private SoundPlayer? _startupAudio;
-
         public MenuForm()
         {
             InitializeComponent();
             LoadBackgroundImage();
-            PlayStartupAudio();
+            GameAudio.PlayStartupAudio();
         }
 
         private void LoadBackgroundImage()
@@ -19,21 +15,10 @@ namespace WinFormsAppClientBattleship
             BackgroundImageLayout = ImageLayout.Stretch;
         }
 
-        private void PlayStartupAudio()
+        private void btnMute_Click(object sender, EventArgs e)
         {
-            var path = AssetPaths.AudioPath("abs1.wav");
-            if (!File.Exists(path))
-                return;
-
-            _startupAudio = new SoundPlayer(path);
-            _startupAudio.Play();
-        }
-
-        private void StopStartupAudio()
-        {
-            _startupAudio?.Stop();
-            _startupAudio?.Dispose();
-            _startupAudio = null;
+            GameAudio.SetMuted(!GameAudio.IsMuted);
+            btnMute.Text = GameAudio.IsMuted ? "Unmute" : "Mute";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -44,18 +29,28 @@ namespace WinFormsAppClientBattleship
             gameForm.Show();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private async void button2_Click(object sender, EventArgs e)
         {
-            StopStartupAudio();
+            button2.Enabled = false;
 
-            var path = AssetPaths.AudioPath("iesire.wav");
-            if (File.Exists(path))
+            foreach (Form openForm in Application.OpenForms.Cast<Form>().ToList())
             {
-                using var player = new SoundPlayer(path);
-                player.PlaySync();
+                if (openForm != this)
+                    openForm.Close();
             }
 
-            Close();
+            GameAudio.StopAll();
+
+            try
+            {
+                await GameAudio.PlayExitSoundAsync();
+            }
+            catch
+            {
+                // ignore playback errors so the app still exits
+            }
+
+            Application.Exit();
         }
     }
 }
