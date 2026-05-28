@@ -19,11 +19,11 @@ namespace WinFormsAppClientBattleship
         private bool isMyTurn = false;
         private Dictionary<string, int> availableShips = new Dictionary<string, int>()
         {
-            {"Carrier (5)", 5},
-            {"Battleship (4)", 4},
-            {"Cruiser (3)", 3},
-            {"Submarine (3)", 3},
-            {"Destroyer (2)", 2}
+            {"Biruinta (5)", 5},
+            {"Cuirasat (4)", 4},
+            {"Submarin Basescu (3)", 3},
+            {"Crucisator Vadim (3)", 3},
+            {"Fregata (2)", 2}
         };
 
         private void InitializeBoards()

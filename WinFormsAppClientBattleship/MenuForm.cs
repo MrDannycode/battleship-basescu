@@ -11,7 +11,7 @@
 
         private void LoadBackgroundImage()
         {
-            BackgroundImage = AssetPaths.LoadImage("intro.jpg");
+            BackgroundImage = AssetPaths.LoadImage("intro2.jpg");
             BackgroundImageLayout = ImageLayout.Stretch;
         }
 

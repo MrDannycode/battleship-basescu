@@ -35,27 +35,27 @@
             // 
             // button1
             // 
-            button1.Location = new Point(502, 243);
+            button1.Location = new Point(447, 251);
             button1.Name = "button1";
             button1.Size = new Size(165, 29);
             button1.TabIndex = 0;
-            button1.Text = "Play";
+            button1.Text = "Lupta";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
             // button2
             // 
-            button2.Location = new Point(502, 308);
+            button2.Location = new Point(447, 372);
             button2.Name = "button2";
             button2.Size = new Size(165, 29);
             button2.TabIndex = 0;
-            button2.Text = "Exit";
+            button2.Text = "Fugi";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
             // btnMute
             // 
-            btnMute.Location = new Point(502, 373);
+            btnMute.Location = new Point(447, 311);
             btnMute.Name = "btnMute";
             btnMute.Size = new Size(165, 29);
             btnMute.TabIndex = 2;
@@ -67,7 +67,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1112, 607);
+            ClientSize = new Size(1147, 658);
             Controls.Add(btnMute);
             Controls.Add(button2);
             Controls.Add(button1);
