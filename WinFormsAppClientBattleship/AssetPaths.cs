@@ -5,8 +5,14 @@ namespace WinFormsAppClientBattleship
         public static string ImagesDirectory =>
             Path.Combine(AppContext.BaseDirectory, "Assets", "Images");
 
+        public static string AudioDirectory =>
+            Path.Combine(AppContext.BaseDirectory, "Assets", "Audio");
+
         public static string ImagePath(string fileName) =>
             Path.Combine(ImagesDirectory, fileName);
+
+        public static string AudioPath(string fileName) =>
+            Path.Combine(AudioDirectory, fileName);
 
         public static Image? LoadImage(string fileName)
         {
